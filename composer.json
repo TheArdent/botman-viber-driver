@@ -1,0 +1,41 @@
+{
+  "name": "theardent/botman-viber-driver",
+  "license": "MIT",
+  "description": "Viber driver for BotMan",
+  "keywords": [
+    "Bot",
+    "BotMan",
+    "Viber",
+    "Messenger"
+  ],
+  "homepage": "https://github.com/TheArdent/botman-viber-driver",
+  "authors": [
+    {
+      "name": "Oleksii Yaryi",
+      "email": "oleksii.yaryi@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "botman/botman": "~2.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.0",
+    "mockery/mockery": "dev-master",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "BotMan\\Drivers\\Viber\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "cs": "php-cs-fixer fix"
+  }
+}
