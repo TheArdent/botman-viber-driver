@@ -26,7 +26,7 @@
   },
   "autoload": {
     "psr-4": {
-      "BotMan\\Drivers\\Viber\\": "src/"
+      "TheArdent\\Drivers\\Viber\\": "src/"
     }
   },
   "autoload-dev": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Botman\Drivers\Viber;
+namespace TheArdent\Drivers\Viber;
 
 use BotMan\BotMan\Users\User;
 use Illuminate\Support\Collection;
