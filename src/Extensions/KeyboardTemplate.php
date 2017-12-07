@@ -46,14 +46,6 @@ class KeyboardTemplate implements JsonSerializable
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getText()
-	{
-		return $this->text;
-	}
-
-	/**
 	 * @param        $text
 	 * @param string $actionType
 	 * @param string $actionBody
@@ -66,23 +58,6 @@ class KeyboardTemplate implements JsonSerializable
 			"ActionBody" => $actionBody,
 			"Text"       => $text,
 			"TextSize"   => $textSize,
-		];
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getButtons()
-	{
-		return $this->buttons;
-	}
-
-	public function getKeyboard()
-	{
-		return [
-			'Type'          => 'keyboard',
-			'DefaultHeight' => true,
-			'Buttons'       => $this->buttons
 		];
 	}
 }

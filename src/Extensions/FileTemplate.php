@@ -69,20 +69,4 @@ class FileTemplate implements JsonSerializable
 
 		return $size;
 	}
-
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getFile()
-	{
-		return $this->fileUrl;
-	}
 }

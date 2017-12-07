@@ -19,8 +19,11 @@ use TheArdent\Drivers\Viber\Events\MessageSeen;
 use TheArdent\Drivers\Viber\Events\MessageStarted;
 use TheArdent\Drivers\Viber\Events\UserSubscribed;
 use TheArdent\Drivers\Viber\Events\UserUnsubscribed;
+use TheArdent\Drivers\Viber\Extensions\ContactTemplate;
 use TheArdent\Drivers\Viber\Extensions\FileTemplate;
 use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
+use TheArdent\Drivers\Viber\Extensions\LinkTemplate;
+use TheArdent\Drivers\Viber\Extensions\LocationTemplate;
 use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
 use TheArdent\Drivers\Viber\Extensions\VideoTemplate;
 
@@ -154,26 +157,8 @@ class ViberDriver extends HttpDriver implements VerifiesService
 		 * If we send a Question with buttons, ignore
 		 * the text and append the question.
 		 */
-		if ($message instanceof PictureTemplate) {
-			$parameters['type'] = 'picture';
-			$parameters['text'] = $message->getText();
-			$parameters['media'] = $message->getImage();
-			$parameters['thumbnail'] = $message->getThumbnail();
-		} elseif ($message instanceof KeyboardTemplate) {
-			$parameters['type'] = 'text';
-			$parameters['text'] = $message->getText();
-			$parameters['keyboard'] = $message->getKeyboard();
-		} elseif ($message instanceof FileTemplate) {
-			$parameters['type'] = 'file';
-			$parameters['media'] = $message->getFile();
-			$parameters['size'] = $message->getSize();
-			$parameters['file_name'] = $message->getName();
-		} elseif ($message instanceof VideoTemplate) {
-			$parameters['type'] = 'video';
-			$parameters['media'] = $message->getVideo();
-			$parameters['thumbnail'] = $message->getThumbnail();
-			$parameters['size'] = $message->getSize();
-			$parameters['duration'] = $message->getDuration();
+		if ($message instanceof \JsonSerializable) {
+			$parameters = array_merge($message->jsonSerialize(),$parameters);
 		} else {
 			$parameters['text'] = $message->getText();
 			$parameters['type'] = 'text';

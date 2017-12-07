@@ -49,28 +49,4 @@ class PictureTemplate implements JsonSerializable
 			'thumbnail' => $this->thumbnail
 		];
 	}
-
-	/**
-	 * @return string
-	 */
-	public function getText()
-	{
-		return $this->text;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getImage()
-	{
-		return $this->image;
-	}
-
-	/**
-	 * @return null|string
-	 */
-	public function getThumbnail()
-	{
-		return $this->thumbnail;
-	}
 }

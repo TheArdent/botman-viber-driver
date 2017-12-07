@@ -59,14 +59,6 @@ class VideoTemplate implements JsonSerializable
 	}
 
 	/**
-	 * @return int|null
-	 */
-	public function getDuration()
-	{
-		return $this->duration;
-	}
-
-	/**
 	 * @return int|nuLl
 	 */
 	public function getSize()
@@ -85,21 +77,5 @@ class VideoTemplate implements JsonSerializable
 		curl_close($ch);
 
 		return $size;
-	}
-
-	/**
-	 * @return null|string
-	 */
-	public function getThumbnail()
-	{
-		return $this->thumbnail;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getVideo()
-	{
-		return $this->video;
 	}
 }
