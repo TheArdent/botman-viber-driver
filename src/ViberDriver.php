@@ -19,6 +19,7 @@ use TheArdent\Drivers\Viber\Events\MessageSeen;
 use TheArdent\Drivers\Viber\Events\MessageStarted;
 use TheArdent\Drivers\Viber\Events\UserSubscribed;
 use TheArdent\Drivers\Viber\Events\UserUnsubscribed;
+use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
 use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
 
 class ViberDriver extends HttpDriver implements VerifiesService
@@ -155,6 +156,10 @@ class ViberDriver extends HttpDriver implements VerifiesService
 			$parameters['text'] = $message->getText();
 			$parameters['media'] = $message->getImage();
 			$parameters['thumbnail'] = $message->getThumbnail();
+		} elseif ($message instanceof KeyboardTemplate) {
+			$parameters['type'] = 'text';
+			$parameters['text'] = $message->getText();
+			$parameters['keyboard'] = $message->getKeyboard();
 		} else {
 			$parameters['text'] = $message->getText();
 			$parameters['type'] = 'text';
