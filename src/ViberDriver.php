@@ -130,7 +130,8 @@ class ViberDriver extends HttpDriver implements VerifiesService
 	 */
 	public function getMessages()
 	{
-		$message = new IncomingMessage($this->payload->get('message')['text'], $this->payload->get('sender')['id'], $this->getBotId(), $this->payload);
+		$user = $this->payload->get('sender') ? $this->payload->get('sender')['id'] : $this->payload->get('user')['id'];
+		$message = new IncomingMessage($this->payload->get('message')['text'], $user, $this->getBotId(), $this->payload);
 
 		return [$message];
 	}
