@@ -2,6 +2,8 @@
 
 namespace TheArdent\Drivers\Viber;
 
+use BotMan\BotMan\Interfaces\DriverEventInterface;
+use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Users\User;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
@@ -9,19 +11,29 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use BotMan\BotMan\Messages\Attachments\Location;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use TheArdent\Drivers\Viber\Events\MessageDelivered;
+use TheArdent\Drivers\Viber\Events\MessageFailed;
+use TheArdent\Drivers\Viber\Events\MessageSeen;
+use TheArdent\Drivers\Viber\Events\MessageStarted;
+use TheArdent\Drivers\Viber\Events\UserSubscribed;
+use TheArdent\Drivers\Viber\Events\UserUnsubscribed;
+use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
 
-class ViberDriver extends HttpDriver
+class ViberDriver extends HttpDriver implements VerifiesService
 {
 	const DRIVER_NAME = 'Viber';
 
 	const API_ENDPOINT = 'https://chatapi.viber.com/pa/';
 
+	/** @var  DriverEventInterface */
+	protected $driverEvent;
+
 	/** @var string|null */
 	private $botId;
+
+	/** @var  array|object */
 	private $bot;
 
 	/**
@@ -57,6 +69,51 @@ class ViberDriver extends HttpDriver
 	}
 
 	/**
+	 * @return bool|DriverEventInterface
+	 */
+	public function hasMatchingEvent()
+	{
+		$event = $this->getEventFromEventData($this->event->toArray());
+		if ($event) {
+			$this->driverEvent = $event;
+			return $this->driverEvent;
+		}
+		return false;
+	}
+
+	/**
+	 * @param array $eventData
+	 *
+	 * @return bool|DriverEventInterface
+	 */
+	public function getEventFromEventData(array $eventData)
+	{
+		switch ($this->event->first()) {
+			case 'delivered':
+				return new MessageDelivered($eventData);
+				break;
+			case 'failed':
+				return new MessageFailed($eventData);
+				break;
+			case 'subscribed':
+				return new UserSubscribed($eventData);
+				break;
+			case 'conversation_started':
+				return new MessageStarted($eventData);
+				break;
+			case 'unsubscribed':
+				return new UserUnsubscribed($eventData);
+				break;
+			case 'seen':
+				return new MessageSeen($eventData);
+				break;
+			default:
+				return false;
+				break;
+		}
+	}
+
+	/**
 	 * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage $message
 	 * @return Answer
 	 */
@@ -72,7 +129,7 @@ class ViberDriver extends HttpDriver
 	 */
 	public function getMessages()
 	{
-		$message = new IncomingMessage($this->payload->get('message')['text'], $this->payload->get('sender')['id'], $this->getBotId());
+		$message = new IncomingMessage($this->payload->get('message')['text'], $this->payload->get('sender')['id'], $this->getBotId(), $this->payload);
 
 		return [$message];
 	}
@@ -147,7 +204,7 @@ class ViberDriver extends HttpDriver
 	 */
 	public function sendRequest($endpoint, array $parameters, IncomingMessage $matchingMessage)
 	{
-		//
+		\Log::info('send request');
 	}
 
 	/**
@@ -164,5 +221,10 @@ class ViberDriver extends HttpDriver
 		}
 
 		return $this->botId;
+	}
+
+	public function verifyRequest(Request $request)
+	{
+		return true;//TODO
 	}
 }
