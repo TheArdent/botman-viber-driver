@@ -19,8 +19,10 @@ use TheArdent\Drivers\Viber\Events\MessageSeen;
 use TheArdent\Drivers\Viber\Events\MessageStarted;
 use TheArdent\Drivers\Viber\Events\UserSubscribed;
 use TheArdent\Drivers\Viber\Events\UserUnsubscribed;
+use TheArdent\Drivers\Viber\Extensions\FileTemplate;
 use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
 use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
+use TheArdent\Drivers\Viber\Extensions\VideoTemplate;
 
 class ViberDriver extends HttpDriver implements VerifiesService
 {
@@ -161,6 +163,17 @@ class ViberDriver extends HttpDriver implements VerifiesService
 			$parameters['type'] = 'text';
 			$parameters['text'] = $message->getText();
 			$parameters['keyboard'] = $message->getKeyboard();
+		} elseif ($message instanceof FileTemplate) {
+			$parameters['type'] = 'file';
+			$parameters['media'] = $message->getFile();
+			$parameters['size'] = $message->getSize();
+			$parameters['file_name'] = $message->getName();
+		} elseif ($message instanceof VideoTemplate) {
+			$parameters['type'] = 'video';
+			$parameters['media'] = $message->getVideo();
+			$parameters['thumbnail'] = $message->getThumbnail();
+			$parameters['size'] = $message->getSize();
+			$parameters['duration'] = $message->getDuration();
 		} else {
 			$parameters['text'] = $message->getText();
 			$parameters['type'] = 'text';
@@ -200,17 +213,19 @@ class ViberDriver extends HttpDriver implements VerifiesService
 		return new User($userInfo->get('id'), $userInfo->get('name'), null, $userInfo->get('name'), $userInfo->toArray());
 	}
 
+
 	/**
 	 * Low-level method to perform driver specific API requests.
 	 *
-	 * @param string $endpoint
-	 * @param array $parameters
-	 * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
-	 * @return void
+	 * @param string          $endpoint
+	 * @param array           $parameters
+	 * @param IncomingMessage $matchingMessage
+	 *
+	 * @return Response
 	 */
 	public function sendRequest($endpoint, array $parameters, IncomingMessage $matchingMessage)
 	{
-		\Log::info('send request');
+		return $this->http->post(self::API_ENDPOINT.$endpoint, [], $parameters, $this->getHeaders());
 	}
 
 	/**
@@ -229,6 +244,11 @@ class ViberDriver extends HttpDriver implements VerifiesService
 		return $this->botId;
 	}
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
 	public function verifyRequest(Request $request)
 	{
 		return true;//TODO
