@@ -1,17 +1,17 @@
 <?php
 
-namespace BotMan\Drivers\Viber\Commands;
+namespace TheArdent\Drivers\Viber\Commands;
 
 use Illuminate\Console\Command;
 
-class Nlp extends Command
+class ViberRegisterCommand extends Command
 {
 	/**
 	 * The name and signature of the console command.
 	 *
 	 * @var string
 	 */
-	protected $signature = 'botman:viber-webhook';
+	protected $signature = 'botman:viber:register';
 
 	/**
 	 * The console command description.
@@ -68,7 +68,10 @@ class Nlp extends Command
 
 		$result = json_decode(file_get_contents($api, false, $context));
 
-		if (isset($result['status']) && $result['status'] === 0) {
+
+		$this->info($result->status);
+
+		if (isset($result->status) && $result->status === 0) {
 			$this->info('Your bot is now set up with Viber\'s webhook!');
 		}
 		else {
