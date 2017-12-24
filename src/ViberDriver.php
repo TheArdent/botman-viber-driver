@@ -236,6 +236,6 @@ class ViberDriver extends HttpDriver implements VerifiesService
 	 */
 	public function verifyRequest(Request $request)
 	{
-		return true;//TODO
+		return hash_equals($request->get('sig'), hash_hmac('sha256',$request->getContent(),$this->config->get('viber')));
 	}
 }
