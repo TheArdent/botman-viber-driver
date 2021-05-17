@@ -125,7 +125,19 @@ class ViberDriver extends HttpDriver implements VerifiesService
 	 */
 	public function getConversationAnswer(IncomingMessage $message)
 	{
-		return Answer::create($message->getText())->setMessage($message);
+		$interactive = $this->payload->get('silent', false);
+		if (is_string($interactive)) {
+		    $interactive = ($interactive !== 'false') && ($interactive !== '0');
+		} else {
+		    $interactive = (bool)$interactive;
+		}
+
+		$text = $message->getText();
+
+		return Answer::create($message->getText())
+		    ->setMessage($message)
+		    ->setValue($text)
+		    ->setInteractiveReply($interactive);
 	}
 
 	/**
